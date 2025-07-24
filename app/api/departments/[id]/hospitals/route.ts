@@ -11,7 +11,8 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const hospitalId = searchParams.get("hospitalId");
+    const city = searchParams.get("city");
+    const state = searchParams.get("state");
 
     if (isNaN(departmentId)) {
       return NextResponse.json(
@@ -36,36 +37,39 @@ export async function GET(
     const skip = (page - 1) * limit;
 
     const where: any = {
-      doctorDepartments: {
+      hospitalDepartments: {
         some: {
           departmentId,
         },
       },
     };
 
-    // If hospitalId is provided, filter doctors who work in that hospital's department
-    if (hospitalId) {
-      const hospitalIdInt = parseInt(hospitalId);
-      if (!isNaN(hospitalIdInt)) {
-        where.hospitalDepartmentDoctors = {
-          some: {
-            hospitalDepartment: {
-              hospitalId: hospitalIdInt,
-              departmentId,
-            },
-          },
-        };
-      }
+    // Add location filters if provided
+    if (city) {
+      where.city = {
+        contains: city,
+        mode: "insensitive",
+      };
     }
 
-    const [doctors, total] = await Promise.all([
-      prisma.doctor.findMany({
+    if (state) {
+      where.state = {
+        contains: state,
+        mode: "insensitive",
+      };
+    }
+
+    const [hospitals, total] = await Promise.all([
+      prisma.hospital.findMany({
         where,
         skip,
         take: limit,
-        orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+        orderBy: { name: "asc" },
         include: {
-          doctorDepartments: {
+          hospitalDepartments: {
+            where: {
+              departmentId,
+            },
             include: {
               department: {
                 select: {
@@ -73,30 +77,14 @@ export async function GET(
                   name: true,
                 },
               },
-            },
-          },
-          hospitalDepartmentDoctors: {
-            where: hospitalId
-              ? {
-                  hospitalDepartment: {
-                    hospitalId: parseInt(hospitalId),
-                    departmentId,
-                  },
-                }
-              : {
-                  hospitalDepartment: {
-                    departmentId,
-                  },
-                },
-            include: {
-              hospitalDepartment: {
+              hospitalDepartmentDoctors: {
                 include: {
-                  hospital: {
+                  doctor: {
                     select: {
                       id: true,
-                      name: true,
-                      city: true,
-                      state: true,
+                      firstName: true,
+                      lastName: true,
+                      qualifications: true,
                     },
                   },
                 },
@@ -105,7 +93,7 @@ export async function GET(
           },
         },
       }),
-      prisma.doctor.count({ where }),
+      prisma.hospital.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -114,7 +102,7 @@ export async function GET(
       success: true,
       data: {
         department,
-        doctors,
+        hospitals,
         pagination: {
           page,
           limit,
@@ -126,9 +114,9 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error(`GET /api/departments/[id]/doctors error:`, error);
+    console.error(`GET /api/departments/[id]/hospitals error:`, error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch doctors for department" },
+      { success: false, error: "Failed to fetch hospitals for department" },
       { status: 500 }
     );
   }

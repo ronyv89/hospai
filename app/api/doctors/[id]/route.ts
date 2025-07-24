@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-type Params = {
-  params: { id: string };
-};
-
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
+    const { id: paramId } = await params;
+    const id = parseInt(paramId);
 
     if (isNaN(id)) {
       return NextResponse.json(
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       data: doctor,
     });
   } catch (error) {
-    console.error(`GET /api/doctors/${params.id} error:`, error);
+    console.error(`GET /api/doctors/[id] error:`, error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch doctor" },
       { status: 500 }
@@ -77,9 +77,13 @@ export async function GET(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
+    const { id: paramId } = await params;
+    const id = parseInt(paramId);
     const body = await request.json();
     const { firstName, lastName, qualifications, departmentIds } = body;
 
@@ -168,7 +172,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
       data: doctor,
     });
   } catch (error) {
-    console.error(`PUT /api/doctors/${params.id} error:`, error);
+    console.error(`PUT /api/doctors/[id] error:`, error);
     return NextResponse.json(
       { success: false, error: "Failed to update doctor" },
       { status: 500 }
@@ -176,9 +180,13 @@ export async function PUT(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
+    const { id: paramId } = await params;
+    const id = parseInt(paramId);
 
     if (isNaN(id)) {
       return NextResponse.json(
@@ -208,7 +216,7 @@ export async function DELETE(request: NextRequest, { params }: Params) {
       message: "Doctor deleted successfully",
     });
   } catch (error) {
-    console.error(`DELETE /api/doctors/${params.id} error:`, error);
+    console.error(`DELETE /api/doctors/[id] error:`, error);
     return NextResponse.json(
       { success: false, error: "Failed to delete doctor" },
       { status: 500 }
