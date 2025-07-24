@@ -13,3 +13,89 @@ datasource db {
   url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+model Department {
+  id          Int      @id @default(autoincrement()) @db.Integer
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  doctorDepartments   DoctorDepartment[]
+  hospitalDepartments HospitalDepartment[]
+
+  @@map("department")
+}
+
+model Doctor {
+  id            Int      @id @default(autoincrement()) @db.Integer
+  firstName     String
+  lastName      String
+  qualifications String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  doctorDepartments         DoctorDepartment[]
+  hospitalDepartmentDoctors HospitalDepartmentDoctor[]
+
+  @@map("doctor")
+}
+
+model DoctorDepartment {
+  id           Int @id @default(autoincrement()) @db.Integer
+  doctorId     Int
+  departmentId Int
+  createdAt    DateTime @default(now())
+
+  doctor     Doctor     @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, departmentId])
+  @@map("doctorDepartment")
+}
+
+model Hospital {
+  id          Int      @id @default(autoincrement()) @db.Integer
+  name        String   @unique
+  address     String?
+  city        String?
+  state       String?
+  zipCode     String?
+  phone       String?
+  email       String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hospitalDepartments HospitalDepartment[]
+
+  @@map("hospital")
+}
+
+model HospitalDepartment {
+  id           Int @id @default(autoincrement()) @db.Integer
+  hospitalId   Int
+  departmentId Int
+  createdAt    DateTime @default(now())
+
+  hospital   Hospital   @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  hospitalDepartmentDoctors HospitalDepartmentDoctor[]
+
+  @@unique([hospitalId, departmentId])
+  @@map("hospitalDepartment")
+}
+
+model HospitalDepartmentDoctor {
+  id                     Int @id @default(autoincrement()) @db.Integer
+  hospitalDepartmentId   Int
+  doctorId               Int
+  createdAt              DateTime @default(now())
+
+  hospitalDepartment HospitalDepartment @relation(fields: [hospitalDepartmentId], references: [id], onDelete: Cascade)
+  doctor             Doctor             @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([hospitalDepartmentId, doctorId])
+  @@map("hospitalDepartmentDoctor")
+}

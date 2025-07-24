@@ -60,6 +60,23 @@ The project includes Mastra for AI-powered functionality:
   - `mastra/workflows/` - Workflow definitions
 - **Dependencies**: Uses `@mastra/core`, `@mastra/libsql`, `@mastra/loggers`, and `@mastra/memory`
 
+### Database Conventions
+
+- **Table Names**: Always use lowercase singular camelCase names (e.g., `department`, `user`, `patient`)
+- **Column Names**: Always use camelCase for both Prisma models and database columns
+- **Example**:
+  ```prisma
+  model Department {
+    id          String   @id @default(cuid())
+    name        String   @unique
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@map("department")
+  }
+  ```
+
 ### Import Patterns
 
 - UI components: `@/components/ui/[component-name]`
