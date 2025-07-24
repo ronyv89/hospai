@@ -3,6 +3,10 @@
     "gluestack-mcp": {
       "command": "node",
       "args": ["/path/to/gluestack/mcp/index.js"]
+    },
+    "mastra": {
+      "command": "npx",
+      "args": ["-y", "@mastra/mcp-docs-server"]
     }
   }
 }

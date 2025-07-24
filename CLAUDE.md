@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js application built with TypeScript that integrates GluestackUI components with NativeWind (TailwindCSS for React Native). The project is configured for cross-platform development, allowing components to work on both web and native platforms.
+This is a Next.js application built with TypeScript that integrates GluestackUI components with NativeWind (TailwindCSS for React Native). The project is configured for cross-platform development, allowing components to work on both web and native platforms. Additionally, it includes Mastra integration for AI agents, tools, and workflows.
 
 ## Common Development Commands
 
@@ -13,6 +13,8 @@ This is a Next.js application built with TypeScript that integrates GluestackUI 
 - `npm run start` - Start the production server
 - `npm run lint` - Run ESLint to check code quality
 - `npm run postinstall` - Apply patches using patch-package (runs automatically after npm install)
+- `npm run dev:mastra` - Start Mastra development server
+- `npm run build:mastra` - Build Mastra agents, tools, and workflows
 
 ## Architecture and Structure
 
@@ -46,9 +48,22 @@ The project uses a sophisticated theming system:
 - React Native Web integration for web compatibility
 - Patches applied via patch-package for React Native Web compatibility
 
+### Mastra Integration
+
+The project includes Mastra for AI-powered functionality:
+
+- **Location**: All Mastra code is in the `mastra/` directory
+- **Entry Point**: `mastra/index.ts` exports the main Mastra instance
+- **Structure**: 
+  - `mastra/agents/` - AI agents configuration
+  - `mastra/tools/` - Custom tools and integrations
+  - `mastra/workflows/` - Workflow definitions
+- **Dependencies**: Uses `@mastra/core`, `@mastra/libsql`, `@mastra/loggers`, and `@mastra/memory`
+
 ### Import Patterns
 
 - UI components: `@/components/ui/[component-name]`
+- Mastra instance: Import from `@/mastra`
 - Assets use Next.js Image optimization
 - TypeScript paths configured for clean imports
 
@@ -59,3 +74,5 @@ When working with this codebase:
 - Use the established color system and CSS variables for consistency
 - Ensure new components work across both web and native platforms
 - Components should leverage both GluestackUI base functionality and NativeWind styling
+- For AI functionality, extend the Mastra setup in the `mastra/` directory
+- Use `npm run dev:mastra` to develop and test Mastra agents and workflows
