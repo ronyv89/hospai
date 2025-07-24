@@ -7,6 +7,10 @@
     "mastra": {
       "command": "npx",
       "args": ["-y", "@mastra/mcp-docs-server"]
+    },
+    "Neon": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
     }
   }
 }
