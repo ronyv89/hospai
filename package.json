@@ -10,7 +10,8 @@
     "postinstall": "patch-package",
     "dev:mastra": "mastra dev --dir mastra",
     "build:mastra": "mastra build --dir mastra",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.23",
