@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       recommendedDepartments,
       recommendedDoctors,
       recommendedHospitals: uniqueHospitals,
-      summary: `Based on AI analysis of your symptoms "${query}", the most relevant departments are ${analysis.primaryDepartments.map(d => d.name).join(', ')}. Urgency level: ${analysis.urgencyLevel}.`,
+      summary: `Based on AI analysis of your symptoms "${query}", the most relevant departments are ${analysis.primaryDepartments.map((d: any) => d.name).join(', ')}. Urgency level: ${analysis.urgencyLevel}.`,
       nextSteps: [
         analysis.urgencyLevel === 'emergency' ? 'Seek immediate emergency medical attention' :
         analysis.urgencyLevel === 'high' ? 'Schedule an urgent appointment or visit urgent care' :
