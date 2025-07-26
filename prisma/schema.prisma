@@ -31,6 +31,7 @@ model Doctor {
   id            Int      @id @default(autoincrement()) @db.Integer
   firstName     String
   lastName      String
+  username      String?  @unique
   qualifications String[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
