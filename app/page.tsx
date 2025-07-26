@@ -238,7 +238,7 @@ export default function Home() {
   );
 
   return (
-    <Box className="h-[calc(100vh-4rem)] bg-background-50 flex flex-col p-2 sm:p-4">
+    <Box className="min-h-[calc(100vh-4rem)] bg-background-50 flex flex-col p-2 sm:p-4">
       <Box className="w-full max-w-6xl mx-auto h-full flex flex-col">
         {/* Header - Compact */}
         <VStack className="items-center mb-3 sm:mb-4 gap-2">
