@@ -6,6 +6,8 @@ import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { Calendar } from "@/components/ui/calendar";
+import { SlotManager } from "@/components/ui/slot-manager";
 import {
   AtSignIcon,
   CalendarDaysIcon,
@@ -22,6 +24,7 @@ export default function StaffDashboard() {
     role: "Doctor",
     primaryDepartment: "General Medicine",
   });
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const fetchStaffInfo = async () => {
@@ -165,22 +168,64 @@ export default function StaffDashboard() {
             </Box>
           </VStack>
 
-          {/* Recent Activity Placeholder */}
-          <VStack className="gap-4">
-            <Text className="text-xl font-semibold text-typography-900">
-              Recent Activity
-            </Text>
-            <Card className="p-6">
-              <VStack className="items-center gap-3 py-8">
-                <Text className="text-typography-500">
-                  No recent activity to display
+          {/* Calendar and Schedule Section */}
+          <Box className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Calendar */}
+            <Box className="lg:col-span-1">
+              <VStack className="gap-4">
+                <Text className="text-xl font-semibold text-typography-900">
+                  Calendar
                 </Text>
-                <Text className="text-sm text-typography-400 text-center max-w-md">
-                  Your recent appointments, patient interactions, and system
-                  updates will appear here.
-                </Text>
+                <Calendar
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                />
               </VStack>
-            </Card>
+            </Box>
+
+            {/* Schedule and Activity */}
+            <Box className="lg:col-span-2">
+              <VStack className="gap-6">
+                {/* Today's Schedule */}
+                <VStack className="gap-4">
+                  <Text className="text-xl font-semibold text-typography-900">
+                    Schedule for {selectedDate.toLocaleDateString()}
+                  </Text>
+                  <Card className="p-6">
+                    <VStack className="gap-4">
+                      <Text className="text-typography-500">
+                        No appointments scheduled for this date
+                      </Text>
+                      <Text className="text-sm text-typography-400">
+                        Your appointments and meetings will appear here.
+                      </Text>
+                    </VStack>
+                  </Card>
+                </VStack>
+
+                {/* Recent Activity */}
+                <VStack className="gap-4">
+                  <Text className="text-xl font-semibold text-typography-900">
+                    Recent Activity
+                  </Text>
+                  <Card className="p-6">
+                    <VStack className="gap-4">
+                      <Text className="text-typography-500">
+                        No recent activity to display
+                      </Text>
+                      <Text className="text-sm text-typography-400">
+                        Your recent patient interactions and system updates will appear here.
+                      </Text>
+                    </VStack>
+                  </Card>
+                </VStack>
+              </VStack>
+            </Box>
+          </Box>
+
+          {/* Slot Management Section */}
+          <VStack className="gap-4">
+            <SlotManager />
           </VStack>
         </VStack>
       </Box>
