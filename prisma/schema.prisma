@@ -14,6 +14,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum DoctorSlotType {
+  OUT_PATIENTS
+  IP_ROUNDS
+  SURGERY
+  CONSULTATION
+  EMERGENCY
+  OPD
+  CHECKUP
+}
+
 model Department {
   id          Int      @id @default(autoincrement()) @db.Integer
   name        String   @unique
@@ -38,6 +48,7 @@ model Doctor {
 
   doctorDepartments         DoctorDepartment[]
   hospitalDepartmentDoctors HospitalDepartmentDoctor[]
+  doctorSlots               DoctorSlot[]
 
   @@map("doctor")
 }
@@ -69,6 +80,7 @@ model Hospital {
   updatedAt   DateTime @updatedAt
 
   hospitalDepartments HospitalDepartment[]
+  doctorSlots         DoctorSlot[]
 
   @@map("hospital")
 }
@@ -99,4 +111,25 @@ model HospitalDepartmentDoctor {
 
   @@unique([hospitalDepartmentId, doctorId])
   @@map("hospitalDepartmentDoctor")
+}
+
+model DoctorSlot {
+  id          Int            @id @default(autoincrement()) @db.Integer
+  doctorId    Int
+  hospitalId  Int
+  type        DoctorSlotType // e.g., "OUT_PATIENTS", "IP_ROUNDS", "SURGERY"
+  description String?
+  dayOfWeek   Int            // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime   String         // e.g., "11:00"
+  endTime     String         // e.g., "12:30"
+  startDate   DateTime       // The first occurrence date for this slot
+  schedule    String?        // Schedule type: "weekly", "biweekly", "monthly", "onetime", "custom"
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  doctor   Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  hospital Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  @@map("doctorSlot")
 }

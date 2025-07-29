@@ -19,6 +19,7 @@ This is a Next.js application built with TypeScript that integrates GluestackUI 
 ## Architecture and Structure
 
 ### UI Component System
+
 The project uses a hybrid approach combining GluestackUI with NativeWind:
 
 - **Components Location**: All UI components are in `components/ui/`
@@ -36,6 +37,7 @@ The project uses a hybrid approach combining GluestackUI with NativeWind:
 ### Styling System
 
 The project uses a sophisticated theming system:
+
 - CSS variables for colors (primary, secondary, tertiary, error, success, warning, info, typography, outline, background, indicator)
 - Each color has multiple shades (0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950)
 - Dark mode support via "class" strategy
@@ -54,7 +56,7 @@ The project includes Mastra for AI-powered functionality:
 
 - **Location**: All Mastra code is in the `mastra/` directory
 - **Entry Point**: `mastra/index.ts` exports the main Mastra instance
-- **Structure**: 
+- **Structure**:
   - `mastra/agents/` - AI agents configuration
   - `mastra/tools/` - Custom tools and integrations
   - `mastra/workflows/` - Workflow definitions
@@ -64,7 +66,9 @@ The project includes Mastra for AI-powered functionality:
 
 - **Table Names**: Always use lowercase singular camelCase names (e.g., `department`, `user`, `patient`)
 - **Column Names**: Always use camelCase for both Prisma models and database columns
+- **Migrations**: ALWAYS use `npx prisma migrate dev --name <descriptive_name>` to generate migrations. NEVER manually create migration files or delete existing migrations as they are committed to version control.
 - **Example**:
+
   ```prisma
   model Department {
     id          String   @id @default(cuid())
@@ -87,9 +91,11 @@ The project includes Mastra for AI-powered functionality:
 ## Development Notes
 
 When working with this codebase:
+
 - Follow the existing dual-file pattern for new UI components (index.tsx + index.web.tsx when needed)
 - Use the established color system and CSS variables for consistency
 - Ensure new components work across both web and native platforms
 - Components should leverage both GluestackUI base functionality and NativeWind styling
 - For AI functionality, extend the Mastra setup in the `mastra/` directory
 - Use `npm run dev:mastra` to develop and test Mastra agents and workflows
+- NEVER reset DB while performing actions, instead create fresh migrations.

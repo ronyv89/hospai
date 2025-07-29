@@ -10,7 +10,7 @@
     "postinstall": "patch-package",
     "dev:mastra": "mastra dev --dir mastra",
     "build:mastra": "mastra build --dir mastra",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts && tsx prisma/username-seeder.ts",
     "db:seed:usernames": "tsx prisma/username-seeder.ts",
     "db:generate": "prisma generate"
   },
