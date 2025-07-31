@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { Pressable } from "@/components/ui/pressable";
@@ -20,6 +21,7 @@ interface DatePickerProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  withPortal?: boolean;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
@@ -33,6 +35,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   disabled = false,
   error,
   className,
+  withPortal = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -153,30 +156,36 @@ const DatePicker: React.FC<DatePickerProps> = ({
       )}
 
       {/* Calendar overlay with fixed positioning */}
-      {isOpen && (
-        <Box 
-          className="fixed inset-0 flex items-center justify-center"
-          style={{ zIndex: 99999, backgroundColor: 'rgba(0,0,0,0.1)' }}
-        >
-          {/* Backdrop */}
-          <Pressable 
-            className="absolute inset-0" 
-            onPress={() => setIsOpen(false)}
-          />
-          
-          {/* Calendar Container */}
-          <Box className="relative date-picker-calendar">
-            <Calendar
-              selectedDate={selectedDate}
-              onDateSelect={handleDateSelect}
-              minDate={minDate}
-              maxDate={maxDate}
-              disablePastDates={!minDate && !maxDate}
-              className="shadow-2xl border border-outline-200 bg-background-0 rounded-lg"
+      {isOpen && (() => {
+        const calendarElement = (
+          <Box 
+            className="fixed inset-0 flex items-center justify-center"
+            style={{ zIndex: 999999, backgroundColor: 'rgba(0,0,0,0.1)' }}
+          >
+            {/* Backdrop */}
+            <Pressable 
+              className="absolute inset-0" 
+              onPress={() => setIsOpen(false)}
             />
+            
+            {/* Calendar Container */}
+            <Box className="relative date-picker-calendar">
+              <Calendar
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+                minDate={minDate}
+                maxDate={maxDate}
+                disablePastDates={!minDate && !maxDate}
+                className="shadow-2xl border border-outline-200 bg-background-0 rounded-lg"
+              />
+            </Box>
           </Box>
-        </Box>
-      )}
+        );
+
+        return withPortal && typeof document !== 'undefined'
+          ? createPortal(calendarElement, document.body)
+          : calendarElement;
+      })()}
     </FormControl>
   );
 };

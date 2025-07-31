@@ -596,6 +596,7 @@ const SlotManager: React.FC = () => {
               required={true}
               minDate={new Date()} // Only allow today or future dates
               className="mb-2"
+              withPortal={true}
             />
             
             {formData.startDate && formData.daysOfWeek.length > 0 && (
